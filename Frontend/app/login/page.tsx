@@ -99,6 +99,14 @@ export default function Login() {
           <Button type="button" onClick={handleLogin} className="w-full">
             登入
           </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/google`;
+            }}
+          >
+            使用 Google 登入
+          </Button>
         </CardFooter>
         <div className="flex">
           <CardDescription className="ml-auto mr-3 items-center">
