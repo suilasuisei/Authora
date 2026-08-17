@@ -23,6 +23,7 @@ namespace Backend.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
+        [Route("/api/Register")]
         public async Task<IActionResult> CreateUserAsync([FromBody] Users request)
         {
             var isOld = await _dbContext.Users.AnyAsync(user => user.Account == request.Account);

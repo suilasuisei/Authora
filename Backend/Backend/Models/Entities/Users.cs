@@ -23,12 +23,12 @@ public partial class Users
     /// <summary>
     /// 使用者狀態
     /// </summary>
-    public string UserStatus { get; set; } = null!;
+    public string? UserStatus { get; set; } = "Enable";
 
     /// <summary>
     /// 創建時間
     /// </summary>
-    public DateTime CreatDate { get; set; }
+    public DateTime? CreatDate { get; set; } = DateTime.UtcNow; // Utc標準時間
 
     /// <summary>
     /// 更新時間

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,8 +13,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const router = useRouter();
+  const [account, setAccount] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin() {
+    try {
+      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/Login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            account,
+            password,
+          }),
+        },
+      );
+
+      const data = await response.text();
+
+      if (response.ok) {
+        alert(data);
+        router.push("/");
+      } else {
+        alert(data);
+      }
+    } catch (error) {
+      console.error("登入發生錯誤:", error);
+      alert("無法連線到後端伺服器");
+    }
+  }
   return (
     <main className="flex min-h-screen items-center justify-center">
       <Card className="w-full max-w-sm ">
@@ -26,7 +65,14 @@ export default function Login() {
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="account">帳號</Label>
-                <Input id="account" type="account" placeholder="" required />
+                <input
+                  type="text"
+                  id="account"
+                  placeholder=""
+                  className=" w-full rounded-lg border border-gray-300 px-4 py-2 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
+                  value={account}
+                  onChange={(e) => setAccount(e.target.value)}
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
@@ -38,13 +84,19 @@ export default function Login() {
                     忘記密碼?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <input
+                  type="password"
+                  id="password"
+                  className=" w-full rounded-lg border border-gray-300 px-4 py-2 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
+          <Button type="button" onClick={handleLogin} className="w-full">
             登入
           </Button>
         </CardFooter>

@@ -12,6 +12,16 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDBConnect
 
 builder.Services.AddControllers();//方法的建置(動作)
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowNextJS", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 builder.Services.AddEndpointsApiExplorer();//控制器路由建置
 builder.Services.AddSwaggerGen(options =>
 {
@@ -43,6 +53,11 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger";
     });
 }
+
+
+app.UseCors("NextJsPolicy");
+
+app.UseCors("AllowNextJS");
 
 app.UseAuthorization();//守門員
 
