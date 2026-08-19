@@ -26,6 +26,8 @@ public partial class TestDBContext : DbContext
             entity.Property(e => e.CreatDate)
                 .HasComment("創建時間")
                 .HasColumnType("datetime");
+            entity.Property(e => e.GoogleId).HasMaxLength(100);
+            entity.Property(e => e.LoginType).HasMaxLength(20);
             entity.Property(e => e.Password)
                 .HasMaxLength(15)
                 .IsUnicode(false)
