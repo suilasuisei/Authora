@@ -13,46 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hook/useAuth";
 
 export default function Register() {
-  const router = useRouter();
+  const { register } = useAuth();
 
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
 
   async function handleRegister() {
-    try {
-      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/Register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            account,
-            password,
-            userName,
-          }),
-        },
-      );
-
-      const data = await response.text();
-
-      if (response.ok) {
-        alert(data);
-        router.push("/login");
-      } else {
-        alert(data);
-      }
-    } catch (error) {
-      console.error("註冊發生錯誤:", error);
-      alert("無法連線到後端伺服器");
-    }
+    await register(account, password, userName);
   }
 
   return (

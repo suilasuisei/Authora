@@ -12,7 +12,7 @@ namespace Backend.Controllers
         /// <param name="number">數字</param>
         /// <param name="name">名稱</param>
         /// <returns></returns>
-        [HttpGet]//讀取 讀取這個過程即使被偷走也沒關係 沒有安全隱患 因此只有標頭沒有身體
+        [HttpGet]//讀取 比較沒有安全隱患 因此只有標頭沒有身體
         public async Task<IActionResult> Get( [FromQuery]int Number,[FromQuery]string? Name = "yoyo" )//Header是標頭 Body是身體 要通過標頭的權限認證才能讀取Body
         {
             return Ok(new { id = 1 });

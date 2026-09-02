@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Models.Entities;
+﻿namespace Backend.Models.Entities;
 
 public partial class Users
 {
@@ -38,4 +35,9 @@ public partial class Users
     public string? LoginType { get; set; }
 
     public string? GoogleId { get; set; }
+
+    public string LineId { get; set; } = null!;
+    public string? DisplayName { get; set; }
+    public string? Email { get; set; }
+    public string? PictureUrl { get; set; }
 }

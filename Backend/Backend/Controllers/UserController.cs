@@ -1,8 +1,9 @@
-﻿using Backend.Models.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Backend.Models.Dtos;
+using Backend.Models.Params;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+
 
 namespace Backend.Controllers
 {
@@ -10,11 +11,17 @@ namespace Backend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly TestDBContext _dbContext;
+        private readonly IUserService _userService;
 
-        public UserController(TestDBContext dbContext)
+        private readonly IMapper _mapper;
+
+        public UserController(
+            IUserService userService,
+            IMapper mapper
+        )
         {
-            _dbContext = dbContext;
+            _userService = userService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -24,16 +31,13 @@ namespace Backend.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("/api/Register")]
-        public async Task<IActionResult> CreateUserAsync([FromBody] Users request)
+        public async Task<IActionResult> CreateUserAsync([FromBody] CreatuserParam request)
         {
-            var isOld = await _dbContext.Users.AnyAsync(user => user.Account == request.Account);
+            
+            var Dto = _mapper.Map<CreateUserDto>(request);
 
-            if (isOld)
-            {
-                return BadRequest("帳號已被使用");
-            }
-            await _dbContext.Users.AddAsync(request);
-            await _dbContext.SaveChangesAsync();
+            await _userService.RegisterUserAsync(Dto);
+
             return Ok("已註冊成功");
         }
 
@@ -42,14 +46,20 @@ namespace Backend.Controllers
         /// </summary>
         /// <param name="acc">帳號</param>
         /// <returns></returns>
+        
+        
         [HttpGet("{acc}")]
-        public async Task<IActionResult> SearchUsernameAsync([FromRoute]string acc)
+        public async Task<IActionResult> SearchUserAsync([FromRoute] SearchuserParam acc)
         {
-            var user = await _dbContext.Users.FirstOrDefaultAsync(user => user.Account == acc);
-            if (user == null) 
+            var Dto = _mapper.Map<SearchUserDto>(acc);
+
+            var user = await _userService.SearchUserAsync(Dto);
+
+            if (user == null)
             {
-                return NotFound("未發現使用者名稱");
+                return NotFound("查無使用者");
             }
+
             return Ok(user);
         }
 
@@ -61,14 +71,14 @@ namespace Backend.Controllers
         /// <returns></returns>
         [HttpDelete("{removeacc}")]
         public async Task<IActionResult> RemoveUserAsync([FromRoute] string removeacc )
-        { 
-            var user = await _dbContext.Users.FirstOrDefaultAsync(user => user.UserName == removeacc);
-            if (user == null) 
+        {
+            var user = await _userService.RemoveUserAsync(removeacc);
+
+            if (user == null)
             {
                 return NotFound("未檢測到帳號");
             }
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
+
             return Ok("已刪除成功");
         }
     }

@@ -14,43 +14,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hook/useAuth";
 
 export default function Login() {
-  const router = useRouter();
+  const { login } = useAuth();
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    try {
-      console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/Login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            account,
-            password,
-          }),
-        },
-      );
-
-      const data = await response.text();
-
-      if (response.ok) {
-        alert(data);
-        router.push("/");
-      } else {
-        alert(data);
-      }
-    } catch (error) {
-      console.error("登入發生錯誤:", error);
-      alert("無法連線到後端伺服器");
-    }
+    await login(account, password);
   }
   return (
     <main className="flex min-h-screen items-center justify-center">
@@ -104,6 +76,14 @@ export default function Login() {
             }}
           >
             使用 Google 登入
+          </Button>
+          <Button
+            type="button"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/line`;
+            }}
+          >
+            使用 LINE 登入
           </Button>
         </CardFooter>
         <div className="flex">

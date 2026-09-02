@@ -1,4 +1,8 @@
 using Backend.Models.Entities;
+using Backend.Repositories;
+using Backend.Repositories.Interfaces;
+using Backend.Services;
+using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +10,19 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IUsersRepo, UsersRepo>();//幫菜單建立使用方法
+
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddAutoMapper(
+    cfg => { },
+    typeof(Program).Assembly
+);
+
+
+builder.Services.AddHttpClient();
+
 
 // ========================================
 // 1. Database
